@@ -1,11 +1,3 @@
-/**
- * DAA Lab-04 - Question 1
- * Application of sorting-I:
- * Stable O(n) Color Sort for pre-sorted pairs (number, color).
- * Colors: Red ('R'), Blue ('B'), Yellow ('Y').
- * Goal: Order all Reds before Blues before Yellows while preserving number order.
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,10 +24,10 @@ const char* color_to_string(Color c) {
     }
 }
 
-Color char_to_color(char ch) {
-    if (ch == 'R' || ch == 'r') return COLOR_RED;
-    if (ch == 'B' || ch == 'b') return COLOR_BLUE;
-    if (ch == 'Y' || ch == 'y') return COLOR_YELLOW;
+Color parse_color(const char *str) {
+    if (str[0] == 'R' || str[0] == 'r') return COLOR_RED;
+    if (str[0] == 'B' || str[0] == 'b') return COLOR_BLUE;
+    if (str[0] == 'Y' || str[0] == 'y') return COLOR_YELLOW;
     return COLOR_UNKNOWN;
 }
 
@@ -63,16 +55,11 @@ void stable_color_sort(const Item input[], int n, Item output[]) {
     }
 }
 
-/**
- * Verification helper: checks whether output array is properly sorted
- */
 bool verify_output(const Item output[], int n) {
     for (int i = 0; i < n - 1; i++) {
-        // Condition 1: Color order must be non-decreasing (Red <= Blue <= Yellow)
         if (output[i].color > output[i + 1].color) {
             return false;
         }
-        // Condition 2: For identical colors, number must be non-decreasing
         if (output[i].color == output[i + 1].color && output[i].number > output[i + 1].number) {
             return false;
         }
@@ -93,30 +80,44 @@ int main(void) {
     printf("  DAA Lab 04 - Question 1: O(n) Stable Color Sorting\n");
     printf("=========================================================\n\n");
 
-    // Predefined demonstration test case
-    Item sample[] = {
-        {1, COLOR_BLUE},
-        {2, COLOR_RED},
-        {4, COLOR_YELLOW},
-        {4, COLOR_BLUE},
-        {7, COLOR_RED},
-        {9, COLOR_YELLOW},
-        {12, COLOR_RED},
-        {15, COLOR_BLUE},
-        {18, COLOR_YELLOW},
-        {20, COLOR_RED}
-    };
-    int n = sizeof(sample) / sizeof(sample[0]);
+    int n;
+    printf("Enter number of items (n): ");
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        fprintf(stderr, "Invalid input for n!\n");
+        return 1;
+    }
 
-    Item* sorted = (Item*)malloc(n * sizeof(Item));
-    if (!sorted) {
+    Item *input = (Item *)malloc(n * sizeof(Item));
+    Item *sorted = (Item *)malloc(n * sizeof(Item));
+    if (!input || !sorted) {
         fprintf(stderr, "Memory allocation error!\n");
         return 1;
     }
 
-    print_items("Input Array (pre-sorted by number)", sample, n);
+    printf("Enter %d items as pairs of (number color_char):\n", n);
+    printf("(Colors: R for Red, B for Blue, Y for Yellow)\n");
+    for (int i = 0; i < n; i++) {
+        char color_str[10];
+        printf("Item #%d (number color): ", i + 1);
+        if (scanf("%d %s", &input[i].number, color_str) != 2) {
+            fprintf(stderr, "Invalid item input!\n");
+            free(input);
+            free(sorted);
+            return 1;
+        }
+        input[i].color = parse_color(color_str);
+        if (input[i].color == COLOR_UNKNOWN) {
+            fprintf(stderr, "Unknown color '%s'! Use R, B, or Y.\n", color_str);
+            free(input);
+            free(sorted);
+            return 1;
+        }
+    }
+    printf("\n");
 
-    stable_color_sort(sample, n, sorted);
+    print_items("Input Array (pre-sorted by number)", input, n);
+
+    stable_color_sort(input, n, sorted);
 
     print_items("Output Array (sorted by color, numbers stable)", sorted, n);
 
@@ -126,6 +127,7 @@ int main(void) {
         printf("[FAILURE] Verification Failed: Output is not properly sorted!\n\n");
     }
 
+    free(input);
     free(sorted);
     return 0;
 }

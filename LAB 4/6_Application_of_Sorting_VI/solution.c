@@ -1,10 +1,3 @@
-/**
- * DAA Lab-04 - Question 6
- * Application of sorting-VI:
- * Identify a point p on the line in the largest number of intervals.
- * Time Complexity: O(n log n).
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -31,9 +24,6 @@ typedef struct {
     int max_overlap_count;
 } OverlapResult;
 
-// Comparator with essential tie-breaking:
-// 1. Sort by coordinate ascending
-// 2. For identical coordinates, ENDPOINT_LEFT (+1) must come BEFORE ENDPOINT_RIGHT (-1)
 int compare_endpoints(const void *a, const void *b) {
     const Endpoint *e1 = (const Endpoint *)a;
     const Endpoint *e2 = (const Endpoint *)b;
@@ -41,16 +31,12 @@ int compare_endpoints(const void *a, const void *b) {
     if (e1->coord < e2->coord) return -1;
     if (e1->coord > e2->coord) return 1;
 
-    // +1 (LEFT) comes before -1 (RIGHT)
     if (e1->type > e2->type) return -1;
     if (e1->type < e2->type) return 1;
 
     return 0;
 }
 
-/**
- * Finds the point p in the maximum number of intervals: O(n log n)
- */
 OverlapResult find_max_overlapping_point(const Interval intervals[], int n) {
     OverlapResult res = {0.0, 0};
     if (n <= 0) return res;
@@ -67,7 +53,6 @@ OverlapResult find_max_overlapping_point(const Interval intervals[], int n) {
         endpoints[2 * i + 1] = (Endpoint){intervals[i].right, ENDPOINT_RIGHT, intervals[i].id};
     }
 
-    // Sort endpoints: O(n log n)
     qsort(endpoints, num_endpoints, sizeof(Endpoint), compare_endpoints);
 
     int current_overlap = 0;
@@ -94,15 +79,30 @@ int main(void) {
     printf("  DAA Lab 04 - Question 6: O(n log n) Max Overlap Point\n");
     printf("=========================================================\n\n");
 
-    // PDF Example: S = {(10, 40), (20, 60), (50, 90), (15, 70)}
-    // Expected: p = 50 in 3 intervals: [20, 60], [50, 90], [15, 70]
-    Interval sample[] = {
-        {10, 40, 1},
-        {20, 60, 2},
-        {50, 90, 3},
-        {15, 70, 4}
-    };
-    int n = sizeof(sample) / sizeof(sample[0]);
+    int n;
+    printf("Enter number of intervals (n): ");
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        fprintf(stderr, "Invalid input for n!\n");
+        return 1;
+    }
+
+    Interval *sample = (Interval *)malloc(n * sizeof(Interval));
+    if (!sample) {
+        fprintf(stderr, "Memory allocation error!\n");
+        return 1;
+    }
+
+    printf("Enter %d closed intervals as (left right) pairs:\n", n);
+    for (int i = 0; i < n; i++) {
+        sample[i].id = i + 1;
+        printf("Interval #%d (left right): ", i + 1);
+        if (scanf("%lf %lf", &sample[i].left, &sample[i].right) != 2) {
+            fprintf(stderr, "Invalid interval input!\n");
+            free(sample);
+            return 1;
+        }
+    }
+    printf("\n");
 
     printf("Input Intervals S (%d intervals):\n", n);
     for (int i = 0; i < n; i++) {
@@ -115,7 +115,6 @@ int main(void) {
     printf("[RESULT] Maximum Overlap Count = %d\n", res.max_overlap_count);
     printf("[RESULT] Point p with Max Overlap = %.1f\n\n", res.point);
 
-    // List all intervals containing point p
     printf("Intervals containing point p = %.1f:\n", res.point);
     int verified_count = 0;
     for (int i = 0; i < n; i++) {
@@ -125,11 +124,12 @@ int main(void) {
         }
     }
 
-    if (verified_count == res.max_overlap_count && res.max_overlap_count == 3) {
-        printf("\n[SUCCESS] Verification against PDF sample passed!\n");
+    if (verified_count == res.max_overlap_count) {
+        printf("\n[SUCCESS] Maximum overlap point verified successfully!\n");
     } else {
         printf("\n[FAILURE] Verification failed!\n");
     }
 
+    free(sample);
     return 0;
 }
