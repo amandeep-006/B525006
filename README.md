@@ -123,7 +123,11 @@ DAA_LAB/
 │   ├── 4_Reverse_Time_Step_DSU
 │   └── 5_Lexicographically_Smallest_Permutation
 │   
-│
+├── LAB 11/
+│   ├── 1_Shortest_Path_0_1_BFS
+│   ├── 2_Multi_Source_BFS_Voronoi
+│   └── 3_Bidirectional_BFS_Word_Graph
+│   
 └── README.md
 ```
 
