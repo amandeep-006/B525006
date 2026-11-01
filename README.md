@@ -35,6 +35,7 @@ Design and Analysis of Algorithms (DAA) focuses on designing efficient algorithm
 | **LAB 08** | Dynamic Programming Design Paradigm | 9 | LCS, LIS, MSIS, Edit Distance Traceback, Rod Cutting, Optimal BST, Collatz Conjecture |
 | **LAB 09** | Greedy Algorithms & Optimization Paradigms | 10 | Fractional Knapsack Deterioration, Canonical Huffman, Min Refuel, Hu-Tucker Tree, Shortest Superstring |
 | **LAB 10** | Graphs, Disjoint Set Union (DSU) & Connected Components | 5 | Online Bipartiteness, Dynamic 2D Islands, Max Weight with Size Limit, Reverse Time-Step DSU, Orbit Permutations |
+| **LAB 11** | Applications of Breadth-First-Search (BFS) Algorithm | 3 | 0-1 BFS on Parity Graph, Multi-Source BFS Voronoi Partitioning, Bidirectional Word Graph BFS |
 
 ---
 
